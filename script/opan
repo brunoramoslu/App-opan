@@ -334,6 +334,13 @@ my $serve_upstream = sub {
   return;
 };
 
+get '/custom' => sub {
+  my $c = shift;
+  $c->render(template => 'custom',
+      collection => path('pans/custom/dists')->list_tree({dir => 0})
+  );
+};
+
 get '/upstream/authors/id/*path' => $serve_upstream;
 
 get '/combined/authors/id/*path' => sub {
@@ -659,3 +666,117 @@ This library is free software and may be distributed under the same terms
 as perl itself.
 
 =cut
+
+__DATA__
+
+@@ custom.html.ep
+% layout 'index', title => 'App::opan Custom PAN';
+<div id="routes" class="box infobox spaced">
+  <table>
+  <thead>
+    <tr>
+      <th>Dists</th>
+    </tr>
+  </thead>
+<% for my $path ($collection->each) { %>
+  <tr>
+    <td class="striped value">
+      <pre><%= $path %></pre>
+    </td>
+  </tr>
+<% } %>
+</table>
+
+@@ layouts/index.html.ep
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <style>
+      body {
+        color: #445555;
+        font: 0.9em 'Helvetica Neue', Helvetica, sans-serif;
+        font-weight: normal;
+        line-height: 1.5em;
+        margin: 0;
+      }
+     :not(pre) > code {
+        background-color: #eef9ff;
+        border: solid #cce4ff 1px;
+        border-radius: 5px;
+        color: #333;
+        font: 0.9em Consolas, Menlo, Monaco, Courier, monospace;
+        padding: 0.4em;
+      }
+      h1 {
+        color: #2a2a2a;
+        font-size: 1.5em;
+        margin: 0;
+      }
+      pre {
+        font: 0.9em Consolas, Menlo, Monaco, Courier, monospace;
+        margin: 0;
+        white-space: pre-wrap;
+      }
+      pre > code {
+        display: block;
+        font: 1.0em Consolas, Menlo, Monaco, Courier, monospace;
+        margin-bottom: 0.7em;
+        margin-top: 0.7em;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td { padding: 0.5em }
+      .box {
+        background-color: #fff;
+        border: 1px solid #c1c1c1;
+        overflow: hidden;
+        padding: 1em;
+        margin-top: 1em;
+        border-radius: 5px;
+      }
+      .infobox {
+        color: #333;
+       }
+      .infobox tr:nth-child(odd) .value {
+        background-color: #ddeeff;
+       }
+      .infobox tr:nth-child(even) .value {
+        background-color: #eef9ff;
+       }
+      .spaced {
+        margin-left: 5em;
+        margin-right: 5em;
+      }
+       #mojobar {
+        color: #eee;
+        background-color: #1a1a1a;
+        background: -webkit-linear-gradient(top, #2a2a2a 0%, #000 100%);
+        background: -moz-linear-gradient(top, #2a2a2a 0%, #000 100%);
+        background: linear-gradient(top, #2a2a2a 0%, #000 100%);
+        box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+        height: 46px;
+        overflow: hidden;
+        width: 100%;
+        z-index: 1000;
+       }
+       #mojobar-brand {
+        display: inline-block;
+        padding-left: 50px;
+        padding-top: 4px;
+       }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mojobar">
+      <h2><%= title %></h2>
+    </div>
+    <%= content %>
+    </div>
+  </body>
+</html>
+
